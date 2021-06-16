@@ -27,6 +27,20 @@ public class PlayerData : ScriptableObject
     [Header("Wall Climb State")]
     public float WallClimbVelocity = 3f;
 
+    [Header("Ledge Climb State")]
+    public Vector2 StartOffset;
+    public Vector2 StopOffset;
+
+    [Header("Dash State")]
+    public float DashCooldown = 0.5f;
+    public float MaxHoldTime = 1f;
+    public float HoldTimeScale = 0.25f;
+    public float DashTime = 0.2f;
+    public float DashVelocity = 30f;
+    public float Drag = 10f;
+    public float DashEndYMultiplier = 0.2f;
+    public float DistanceBetweenAfterImages = 0.5f;
+
     [Header("Check Variables")]
     public float GroundCheckRadius = 0.3f;
     public float WallCheckDistance = 0.5f;
