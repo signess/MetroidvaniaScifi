@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +18,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool DashInput { get; private set; }
     public bool DashInputStop { get; private set; }
 
+    public bool[] AttackInputs { get; private set; }
+
     [SerializeField] private float inputHoldTime = 0.2f;
 
     private float jumpInputStartTime;
@@ -25,6 +28,10 @@ public class PlayerInputHandler : MonoBehaviour
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
+
+        int count = Enum.GetValues(typeof(CombatInputs)).Length;
+        AttackInputs = new bool[count];
+
         cam = Camera.main;
     }
 
@@ -32,6 +39,30 @@ public class PlayerInputHandler : MonoBehaviour
     {
         CheckJumpInputHoldTime();
         CheckDashInputHoldTime();
+    }
+
+    public void OnPrimaryAttackInput(InputAction.CallbackContext ctx)
+    {
+        if(ctx.started)
+        {
+            AttackInputs[(int)CombatInputs.Primary] = true;
+        }
+        if(ctx.canceled)
+        {
+            AttackInputs[(int)CombatInputs.Primary] = false;
+        }
+    }
+
+    public void OnSecondaryAttackInput(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started)
+        {
+            AttackInputs[(int)CombatInputs.Secondary] = true;
+        }
+        if (ctx.canceled)
+        {
+            AttackInputs[(int)CombatInputs.Secondary] = false;
+        }
     }
 
     public void OnMoveInput(InputAction.CallbackContext ctx)
@@ -106,7 +137,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         RawDashDirectionInput = ctx.ReadValue<Vector2>();
 
-        if(playerInput.currentControlScheme == "Keyboard")
+        if (playerInput.currentControlScheme == "Keyboard")
         {
             RawDashDirectionInput = cam.ScreenToWorldPoint((Vector3)RawDashDirectionInput) - transform.position;
         }
@@ -116,4 +147,10 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     public void UseDashInput() => DashInput = false;
+}
+
+public enum CombatInputs
+{
+    Primary,
+    Secondary
 }
